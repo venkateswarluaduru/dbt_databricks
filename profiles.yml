@@ -1,0 +1,60 @@
+# This configuration file specifies information about connections to
+# your data warehouse(s). The file contains a series of "profiles."
+# Profiles specify database credentials and connection information
+#
+# By default, dbt looks for this file in ~/.dbt/profiles.yml. That option
+# can be configured when dbt is invoked with the --profiles-dir option:
+#
+#  $ dbt run --profiles-dir /opt/dbt/
+#
+
+# Profiles should adhere to the structure defined below:
+#
+# [profile-name]:
+#   outputs:
+#     [target-name]:
+#       type: {redshift, postgres}
+#       threads: [1 - 8]
+#       host: [host ip or fully qualified domain name]
+#       port: [port]
+#       user: [user]
+#       pass: [password]
+#       dbname: [dbname]
+#       schema: [schema name]
+#   target: [target-name]
+#
+# Commonly, it's helpful to define multiple targets for a profile. For example,
+# these targets might be `dev` and `prod`. Whereas the `dev` target points to
+# a development schema (eg. dbt_dev), the `prod` schema should point to the
+# prod schema (eg. analytics). Analytical/BI tools should point to the
+# prod schema so that local development does not interfere with analysis.
+#
+# In practice, a profile might look like this:
+
+dbt_demo1:
+  outputs:
+    dev_bronze:
+      catalog: tfin_financial
+      host: adb-7551424170386501.1.azuredatabricks.net
+      http_path: /sql/1.0/warehouses/33a958c72e5616fb
+      schema: default
+      threads: 2
+      token: dapi66a3dbdaa504b0ed6924f2af9b5fbf68-3
+      type: databricks
+    dev_silver:
+      catalog: tfin_financial
+      host: adb-7551424170386501.1.azuredatabricks.net
+      http_path: /sql/1.0/warehouses/33a958c72e5616fb
+      schema: silver
+      threads: 2
+      token: dapi66a3dbdaa504b0ed6924f2af9b5fbf68-3
+      type: databricks
+  target: dev_silver
+
+# You can switch between profiles and targets on the command line. All of the
+# following are valid ways to invoke dbt run/test/compile/etc
+#
+# $ dbt run --profile dbt_demo1
+# $ dbt run --profile dbt_demo1 --target dev
+# $ dbt run --profile dbt_demo1 --target prod
+#
